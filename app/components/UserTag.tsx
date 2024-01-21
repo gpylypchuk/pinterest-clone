@@ -12,7 +12,7 @@ function UserTag() {
             session?
             <div>
                 <Image 
-                    src={session?.user?.image} 
+                    src={session?.user?.image || ''}
                     width={50} 
                     height={50} 
                     alt={'userImage'}
