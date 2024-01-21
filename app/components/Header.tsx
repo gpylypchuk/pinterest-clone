@@ -1,25 +1,36 @@
 "use client";
 import Image from 'next/image'
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Logo from '../../public/logo.png'
-import Man from '../../public/man.png'
 import { HiBell, HiChat, HiSearch } from 'react-icons/hi'
 import { signIn, useSession } from 'next-auth/react'
 import app from '../Shared/firebaseConfig'
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 function Header() {
     const { data: session } = useSession()
 
+    const router = useRouter()
+
     const db = getFirestore(app)
+
+    const onCreateClick = () => {
+        if (session?.user?.email) {
+            router.push('/pin-builder')
+        } else {
+            signIn()
+        }
+    }
 
     useEffect(() => {
         saveUserInfo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session])
 
     const saveUserInfo = async () => {
         if (session?.user) {
-            await setDoc(doc(db, "user", session?.user?.email), {
+            await setDoc(doc(db, "user", session?.user?.email as string), {
                 name: session?.user?.name,
                 image: session?.user?.image,
                 email: session?.user?.email,
@@ -35,9 +46,10 @@ function Header() {
             height={50} 
             alt={'logo'}
             className='hover:bg-gray-300 p-2 rounded-full cursor-pointer'
+            onClick={() => router.push('/')}
         />
-        <button className='bg-black text-white p-2 px-4 rounded-full hidden md:block'>Home</button>
-        <button className='font-semibold p-2 px-4 rounded-full'>Create</button>
+        <button className='bg-black text-white p-2 px-4 rounded-full hidden md:block' onClick={() => router.push('/')}>Home</button>
+        <button className='font-semibold p-2 px-4 rounded-full' onClick={() => onCreateClick()}>Create</button>
         
         <div className='bg-[#e9e9e9] p-3 gap-3 item-center rounded-full w-full hidden md:flex'>
             <HiSearch className='text-[25px] text-gray-500' />
@@ -54,18 +66,11 @@ function Header() {
                 height={50} 
                 alt={'logo'}
                 className='hover:bg-gray-300 p-2 rounded-full cursor-pointer'
+                onClick={() => router.push('/'+session?.user?.email)}
             />
             :
-            <Image
-                src={Man}
-                width={50}
-                height={50}
-                alt={'logo'}
-                className='hover:bg-gray-300 p-2 rounded-full cursor-pointer'
-            />
-            
+            <button onClick={() => signIn()} className='font-semibold p-2 px-4 rounded-full'>Login</button> 
         }
-        <button onClick={() => signIn()} className='font-semibold p-2 px-4 rounded-full'>Login</button>
     </div>
   )
 }
