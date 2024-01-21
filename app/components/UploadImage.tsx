@@ -21,7 +21,7 @@ function UploadImage({ setImage }: any) {
             :null}
             {selectedFile?
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={window.URL.createObjectURL(selectedFile)}
+            <img src={URL.createObjectURL(selectedFile)}
             alt='selected-image'
             width={500}
             height={800}
