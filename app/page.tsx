@@ -10,6 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     getAllPins()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getAllPins = async () => {
