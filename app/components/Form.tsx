@@ -9,14 +9,15 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import Image from 'next/image';
 import Loading from '../../public/loading-indicator.png'
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 function Form() {
     const {data: session} = useSession()
     
-    const [title, setTitle] = React.useState('')
-    const [description, setDescription] = React.useState('')
-    const [link, setLink] = React.useState('')
-    const [image, setImage] = React.useState<File | null>(null)
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [link, setLink] = useState('')
+    const [image, setImage] = useState<File | null>(null)
 
     const [loading, setLoading] = React.useState(false)
 
@@ -30,15 +31,15 @@ function Form() {
 
     const onSave = () => {
         setLoading(true)
-        console.log(title, description, link)
+        // console.log(title, description, link)
         uploadImage()
     }
 
     const uploadImage = async () => {
         const storageRef = ref(storage, 'pinterest/' + image?.name);
-        uploadBytes(storageRef, image as Blob).then((snapshot) => {
+        uploadBytes(storageRef, image as Blob).then(() => {
             console.log('Uploaded a blob or file!');
-        }).then((response) => {
+        }).then(() => {
             getDownloadURL(storageRef).then(async (url) => {
                 console.log(url)
                 const postData = {
